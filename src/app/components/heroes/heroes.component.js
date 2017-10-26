@@ -23,7 +23,6 @@ var HeroesComponent = (function () {
         this.heroService = heroService;
         // title = 'Tour of Heroes';
         this.hero = { id: 2, name: 'Narco' };
-        this._heroService = heroService;
     }
     /**
      * @method onSelect
@@ -42,7 +41,7 @@ var HeroesComponent = (function () {
     HeroesComponent.prototype.setHeroes = function () {
         var _this = this;
         //this.heroes = this._heroService.getHeroes();
-        this._heroService.getHeroes()
+        this.heroService.getHeroes()
             .then(function (heroes) { return _this.heroes = heroes; })
             .catch(function (error) { return console.log(error); });
     };
@@ -62,6 +61,42 @@ var HeroesComponent = (function () {
      */
     HeroesComponent.prototype.gotoDetail = function () {
         this.router.navigate(['/detail', this.selectedHero.id]);
+    };
+    /**
+     *
+     *
+     * @param {string} name
+     * @returns {void}
+     * @memberof HeroesComponent
+     */
+    HeroesComponent.prototype.add = function (name) {
+        var _this = this;
+        name = name.trim();
+        if (!name) {
+            return;
+        }
+        this.heroService.create(name)
+            .then(function (hero) {
+            _this.heroes.push(hero);
+            _this.selectedHero = null;
+        });
+    };
+    /**
+     *
+     *
+     * @param {Hero} hero
+     * @memberof HeroesComponent
+     */
+    HeroesComponent.prototype.delete = function (hero) {
+        var _this = this;
+        this.heroService
+            .delete(hero.id)
+            .then(function () {
+            _this.heroes = _this.heroes.filter(function (h) { return h !== hero; });
+            if (_this.selectedHero === hero) {
+                _this.selectedHero = null;
+            }
+        });
     };
     return HeroesComponent;
 }());

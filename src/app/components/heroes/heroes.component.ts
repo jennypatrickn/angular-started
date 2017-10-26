@@ -17,7 +17,6 @@ export class HeroesComponent implements OnInit{
   hero: Hero = {id: 2, name: 'Narco'};
   selectedHero: Hero;
   heroes: Hero[];
-  _heroService: HeroService;
 
   /**
    * @description Dependance injection via constructor
@@ -25,7 +24,6 @@ export class HeroesComponent implements OnInit{
    * @memberof HeroesComponent
    */
   constructor(private router: Router, private heroService: HeroService) {
-    this._heroService = heroService;
   }
 
   /**
@@ -45,7 +43,7 @@ export class HeroesComponent implements OnInit{
    */
   setHeroes(): void {
      //this.heroes = this._heroService.getHeroes();
-     this._heroService.getHeroes()
+     this.heroService.getHeroes()
      .then(heroes => this.heroes = heroes)
      .catch(error => console.log(error));
   }
@@ -67,5 +65,38 @@ export class HeroesComponent implements OnInit{
    */
   gotoDetail(): void {
     this.router.navigate(['/detail', this.selectedHero.id]);
+  }
+
+  /**
+   * 
+   * 
+   * @param {string} name 
+   * @returns {void} 
+   * @memberof HeroesComponent
+   */
+  add(name: string): void {
+    name = name.trim();
+    if(!name) { return; }
+    this.heroService.create(name)
+        .then(hero => {
+            this.heroes.push(hero);
+            this.selectedHero = null;
+        });
+  }
+
+
+  /**
+   * 
+   * 
+   * @param {Hero} hero 
+   * @memberof HeroesComponent
+   */
+  delete(hero: Hero): void {
+      this.heroService
+          .delete(hero.id)
+          .then(() => {
+            this.heroes = this.heroes.filter(h => h !== hero);
+            if (this.selectedHero === hero) { this.selectedHero = null; }
+          });
   }
 }
