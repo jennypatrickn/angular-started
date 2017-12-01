@@ -1,9 +1,11 @@
 import { Injectable }   from '@angular/core';
 import {Headers, Http } from '@angular/http';
 
+
 import 'rxjs/add/operator/toPromise';
 
 import { Hero } from '../bo/hero';
+
 //import { HEROES } from '../mock-data/mock-heroes';
 
 @Injectable()
@@ -14,12 +16,11 @@ export class HeroService {
     // }
 
     private heroesUrl = 'api/heroes'; //URL to web api
-    private headers = new Headers({'Content-Type': 'application/json'});
+    
+    private headers   = new Headers({'Content-Type': 'application/json'});
     
 
-    constructor(private http: Http) {
-        
-    }
+    constructor(private http: Http) {}
 
     /**
      * 
@@ -30,7 +31,7 @@ export class HeroService {
     // getHeroes(): Promise<Hero[]> {
     //     return Promise.resolve(HEROES);
     // }
-    getHeroes(): Promise<Hero[]> {
+    getHeroes(): Promise<any> {
         return this.http.get(this.heroesUrl)
                     .toPromise()
                     .then(response => response.json().data as Hero[])
